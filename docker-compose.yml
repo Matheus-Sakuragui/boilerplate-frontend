@@ -1,0 +1,6 @@
+services:
+  frontend:
+    image: $IMAGE
+    ports:
+      - "3000:3000"
+    command: pnpm start

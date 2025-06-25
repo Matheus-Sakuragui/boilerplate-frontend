@@ -1,0 +1,59 @@
+stages:
+  - build
+  - push
+  - deploy-app
+
+variables:
+  IMAGE: $REGISTRY_SERVER/$CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+  PROJECT_NAME: $CI_COMMIT_REF_SLUG-$CI_PROJECT_NAME
+  REGISTRY: $REGISTRY_SERVER
+
+build:
+  stage: build
+  tags:
+    - pipelines # máquina para rodar os pipelines e não causar latência prd - pode ser usada a máquina de homologação para isso
+  script:
+    - echo "Iniciando build..."
+    - echo "Construindo imagem:"$IMAGE
+    - docker build -t $IMAGE .
+
+push:
+  stage: push
+  tags:
+    - pipelines # máquina para rodar os pipelines e não causar latência prd - pode ser usada a máquina de homologação para isso
+  script:
+    - echo "Efetuando push da imagem gerada..."
+    - echo "Efetuando push da imagem:"$IMAGE
+    - docker push $IMAGE
+
+.deploy_compose_shell: &deploy_compose_shell |
+  echo "Efetuando deploy da imagem gerada..."
+  echo "Imagem atual:"$IMAGE
+  echo "Projeto:"$PROJECT_NAME
+  echo "Baixando a stack atual no caminho:"$PWD
+  docker compose -f $PWD/docker-compose.yml -p $PROJECT_NAME down --remove-orphans
+  docker compose -f $PWD/docker-compose.yml -p $PROJECT_NAME up -d
+
+
+.deploy_common_app: &deploy_common_app
+  environment: $CI_COMMIT_REF_SLUG
+  stage: deploy-app
+  script:
+    - *common_function_export_vars
+    - *deploy_compose_shell
+
+
+deploy-app-qa:
+  <<: *deploy_common_app
+  only:
+    - qa
+  tags:
+    - vm-hmg
+
+
+deploy-app-master:
+  <<: *deploy_common_app
+  only:
+    - master
+  tags:
+    - vm-prd
