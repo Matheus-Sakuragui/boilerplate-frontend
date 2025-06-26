@@ -12,11 +12,11 @@ function middleware(req: NextRequest) {
 
     const isAuthRoute = req.nextUrl.pathname.startsWith("/auth")
     const isPrivateRoute = req.nextUrl.pathname.startsWith("/user")
-    const isRootPath = req.nextUrl.pathname === "/"
+    // const isRootPath = req.nextUrl.pathname === "/"
 
-    if (isRootPath) {
-        return NextResponse.redirect(new URL("/ks-burguer", req.url))
-    }
+    // if (isRootPath) {
+    //     return NextResponse.redirect(new URL("/", req.url))
+    // }
 
     if (token) {
         const decodedToken = jwt.decode(token) as { exp?: number } | null

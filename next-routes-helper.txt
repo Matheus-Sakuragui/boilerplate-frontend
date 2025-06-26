@@ -1,0 +1,18 @@
+rota -> localhost/rota
+app/
+    rota/
+        rota1/
+            rota2/
+                -> localhost/rota/rota1/rota2
+
+[rota] -> rota parametrizada -> recebe um params que vai ser usado para diferentes contextos
+app/
+    [rota]/
+        rota1/
+            -> localhost/[:rota]/rota1
+
+(rota) -> rota invisível -> para organização de pastas
+app/
+    (rota)/
+        rota1/
+            -> localhost/rota1

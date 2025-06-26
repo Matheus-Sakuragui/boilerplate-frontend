@@ -1,8 +1,8 @@
-import { AxiosError } from "axios"
 import { management } from "@/api/management"
 import type { LoginProps } from "@/interfaces/management/auth"
+import { ServiceAbstract } from "@/interfaces/service-abstract"
 
-class AuthService {
+class AuthService extends ServiceAbstract {
     async getUserInfo(token: string) {
         try {
             const response = await management.get("/auth", {
@@ -43,14 +43,6 @@ class AuthService {
             console.error("Erro ao renovar o token:", error)
             return null
         }
-    }
-
-    private handleAxiosError(error: unknown) {
-        if (error instanceof AxiosError) {
-            return error.response?.data
-        }
-        console.error("Erro desconhecido:", error)
-        return { message: "Erro desconhecido." }
     }
 }
 
