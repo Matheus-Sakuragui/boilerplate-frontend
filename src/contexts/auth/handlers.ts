@@ -4,7 +4,7 @@ import type { AxiosResponse } from "axios"
 import type { useRouter } from "next/navigation"
 import type { Dispatch, SetStateAction } from "react"
 import { toast } from "sonner" // componente de notificação
-import type { LoginProps, UserDataProps } from "@/interfaces/management/auth"
+import type { LoginProps, TwoFAProps, UserDataProps } from "@/interfaces/management/auth"
 import type { AuthService } from "@/services/management/auth"
 import { removeToken, setToken } from "@/utils/token"
 
@@ -54,7 +54,40 @@ const loginHandler = async (
         setIsLoading(true)
         const response = await authService.login(body)
         handleLoginResponse(response, setIsLoading)
-        const token = response.data.accessToken
+        const token = response.data.access_key
+        if (token) {
+            setAccessToken(token)
+            setToken(token)
+
+            // const userResponse = await authService.getUserInfo(token)
+            // setUserData(userResponse.data)
+            // toast.success(`Seja bem-vindo(a) ${userResponse.data.name}!`, {
+            //     duration: 5000,
+            //     description: "Login realizado com sucesso",
+            //     descriptionClassName: "text-xs text-white",
+            // })
+            router.push("/auth/verify-token")
+        }
+
+        setIsLoading(false)
+    } catch (error) {
+        console.error("Erro ao fazer login:", error)
+    }
+}
+
+const verifyTokenHandler = async (
+ body: TwoFAProps,
+    authService: AuthService,
+    setAccessToken: Dispatch<SetStateAction<string | undefined>>,
+    setUserData: Dispatch<SetStateAction<UserDataProps | null>>,
+    router: ReturnType<typeof useRouter>,
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+) => {
+    try {
+        setIsLoading(true)
+        const response = await authService.verifyCode(body)
+        handleLoginResponse(response, setIsLoading)
+        const token = response.data.access_key
         if (token) {
             setAccessToken(token)
             setToken(token)
@@ -66,7 +99,7 @@ const loginHandler = async (
                 description: "Login realizado com sucesso",
                 descriptionClassName: "text-xs text-white",
             })
-            router.push("/ks-burguer")
+            router.push("/")
         }
 
         setIsLoading(false)
@@ -101,4 +134,4 @@ const logoutHandler = async (
     removeToken()
 }
 
-export { loginHandler, logoutHandler, refreshAccessTokenHandler, fetchUserInfo }
+export { loginHandler, logoutHandler, refreshAccessTokenHandler, fetchUserInfo, verifyTokenHandler }

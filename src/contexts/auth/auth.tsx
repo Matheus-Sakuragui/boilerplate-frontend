@@ -11,7 +11,12 @@ import {
 } from "react"
 import { management } from "@/api/management"
 import type { ChildrenProps } from "@/interfaces/children"
-import type { LoginProps, UserDataProps } from "@/interfaces/management/auth"
+import type {
+    LoginProps,
+    TwoFAProps,
+    UserDataProps,
+    VerifyCodeProps,
+} from "@/interfaces/management/auth"
 import { AuthService } from "@/services/management/auth"
 import { getToken } from "@/utils/token"
 import {
@@ -19,6 +24,7 @@ import {
     loginHandler,
     logoutHandler,
     refreshAccessTokenHandler,
+    verifyTokenHandler,
 } from "./handlers"
 import { initializeInterceptors } from "./interceptors"
 
@@ -32,6 +38,10 @@ export interface AuthContextProps {
     fetchUserData: () => Promise<void>
     logout: () => Promise<void>
     isAuthenticated: boolean
+    verifyToken: (
+        body: TwoFAProps,
+        setIsLoading: Dispatch<SetStateAction<boolean>>
+    ) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
@@ -93,6 +103,20 @@ const AuthProvider: FC<ChildrenProps> = ({ children }) => {
         )
     }
 
+    const verifyToken = async (
+        body: TwoFAProps,
+        setIsLoading: Dispatch<SetStateAction<boolean>>
+    ) => {
+        await verifyTokenHandler(
+            body,
+            authService,
+            setAccessToken,
+            setUserData,
+            router,
+            setIsLoading
+        )
+    }
+
     const logout = async () => {
         await logoutHandler(authService, setAccessToken, setUserData)
     }
@@ -106,6 +130,7 @@ const AuthProvider: FC<ChildrenProps> = ({ children }) => {
                 logout,
                 isAuthenticated,
                 fetchUserData,
+                verifyToken,
             }}
         >
             {children}

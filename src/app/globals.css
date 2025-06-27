@@ -42,13 +42,13 @@
 }
 
 @theme {
-  --color-resix-blue-50: #f2f1ff
+  --color-resix-blue-50: #f2f1ff;
   --color-resix-blue-100: #e6e5ff
 }
 
 :root {
   --radius: 0.65rem;
-  --background: oklch(1 0 0);
+  --background: #f6f7f8;
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);

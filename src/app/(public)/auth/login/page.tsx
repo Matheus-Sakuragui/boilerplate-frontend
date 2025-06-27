@@ -1,20 +1,16 @@
-import { LoginFooter } from "./components/login-footer"
+import { Card, CardContent } from "@/components/atoms/card"
 import { LoginForm } from "./components/login-form"
-import { LoginHeader } from "./components/login-header"
-import { LoginOAuth } from "./components/login-oauth"
+import { LoginLogoHeader } from "@/components/molecules/login-logo-header"
 
 function LoginPage() {
     return (
-        <div className="w-full min-h-full flex flex-col p-5 space-y-8 text-sm mt-14">
-            <LoginHeader />
-            <LoginForm />
-            <div className="flex gap-5 items-center justify-center w-full">
-                <div className="border w-full" />
-                <span>ou</span>
-                <div className="border w-full" />
-            </div>
-            <LoginOAuth />
-            <LoginFooter />
+        <div className="min-h-screen flex justify-center p-5 bg-gray-5 flex-col items-center gap-10">
+            <LoginLogoHeader />
+            <Card className="p-10 w-auto max-w-md">
+                <CardContent>
+                    <LoginForm />
+                </CardContent>
+            </Card>
         </div>
     )
 }

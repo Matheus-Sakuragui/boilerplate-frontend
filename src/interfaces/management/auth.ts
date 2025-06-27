@@ -54,4 +54,13 @@ interface LoginProps {
     password: string
 }
 
-export type { LoginProps, UserDataProps, UserInfosProps }
+interface TwoFAProps {
+    access_key: string,
+    auth_code: string
+}
+
+interface VerifyCodeProps {
+    email:string,
+}
+
+export type { LoginProps, TwoFAProps, UserDataProps, UserInfosProps, VerifyCodeProps }

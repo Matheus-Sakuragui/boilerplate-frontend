@@ -1,14 +1,11 @@
 import { management } from "@/api/management"
-import type { LoginProps } from "@/interfaces/management/auth"
+import type { LoginProps, TwoFAProps } from "@/interfaces/management/auth"
 import { ServiceAbstract } from "@/interfaces/service-abstract"
 
 class AuthService extends ServiceAbstract {
     async getUserInfo(token: string) {
         try {
-            const response = await management.get("/auth", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-
+            const response = await management.get("/user/info",  { params: token })
             return response
         } catch (error) {
             return this.handleAxiosError(error)
@@ -17,7 +14,7 @@ class AuthService extends ServiceAbstract {
 
     async login(body: LoginProps) {
         try {
-            const response = await management.post("/auth/login", body, {
+            const response = await management.post("/token", body, {
                 validateStatus: () => true,
             })
             return response
@@ -29,6 +26,17 @@ class AuthService extends ServiceAbstract {
     async logout() {
         try {
             const response = await management.post("/auth/logout")
+            return response
+        } catch (error) {
+            return this.handleAxiosError(error)
+        }
+    }
+
+    async verifyCode (body: TwoFAProps) {
+       try {
+            const response = await management.post("/token_auth", body, {
+                validateStatus: () => true,
+            })
             return response
         } catch (error) {
             return this.handleAxiosError(error)

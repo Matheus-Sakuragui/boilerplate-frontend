@@ -6,7 +6,6 @@ import {
     EyeClosed,
     Loader2,
     Lock,
-    LockOpen,
     LogIn,
     Mail,
 } from "lucide-react"
@@ -23,7 +22,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/atoms/form"
-import { InputContainer, InputField, InputIcon } from "@/components/atoms/input"
+import { InputIcon } from "@/components/atoms/input"
 import { useAuth } from "@/hooks/use-auth"
 import { isValidEmail } from "@/utils/validators"
 
@@ -89,15 +88,12 @@ function LoginForm() {
                                 E-mail
                             </FormLabel>
                             <FormControl>
-                                <InputContainer>
-                                    <InputIcon>
-                                        <Mail className="size-5" />
-                                    </InputIcon>
-                                    <InputField
-                                        placeholder="Insira seu e-mail"
-                                        {...field}
-                                    />
-                                </InputContainer>
+                                <InputIcon
+                                    {...field}
+                                    type="text"
+                                    icon={<Mail className="size-4" />}
+                                    placeholder="Digite seu e-mail"
+                                />
                             </FormControl>
                             <FormMessage className="w-full bg-salmon-200 rounded-lg p-2 font-semibold text-xs" />
                         </FormItem>
@@ -113,39 +109,30 @@ function LoginForm() {
                             </FormLabel>
                             <FormControl>
                                 <div className="space-y-1">
-                                    <InputContainer>
-                                        <InputIcon>
-                                            {passwordVisibility ? (
-                                                <LockOpen className="size-5" />
-                                            ) : (
-                                                <Lock className="size-5" />
-                                            )}
-                                        </InputIcon>
-                                        <InputField
-                                            type={
-                                                passwordVisibility
-                                                    ? "text"
-                                                    : "password"
-                                            }
-                                            placeholder="Insira sua senha"
-                                            {...field}
-                                        />
-                                        <InputIcon>
-                                            <Button
-                                                variant={"ghost"}
-                                                className="flex items-center text-salmon-400 group-focus-within:text-salmon-700 hover:text-salmon-400 group-focus-within:hover:text-salmon-700"
+                                    <InputIcon
+                                        {...field}
+                                        type={
+                                            passwordVisibility
+                                                ? "text"
+                                                : "password"
+                                        }
+                                        icon={<Lock className="size-4" />}
+                                        rightIcon={
+                                            <button
+                                                type="button"
                                                 onClick={
                                                     togglePasswordVisibility
                                                 }
                                             >
                                                 {passwordVisibility ? (
-                                                    <Eye className="size-5" />
+                                                    <EyeClosed />
                                                 ) : (
-                                                    <EyeClosed className="size-5" />
+                                                    <Eye />
                                                 )}
-                                            </Button>
-                                        </InputIcon>
-                                    </InputContainer>
+                                            </button>
+                                        }
+                                    />
+
                                     <Button
                                         type="button"
                                         tabIndex={-1}

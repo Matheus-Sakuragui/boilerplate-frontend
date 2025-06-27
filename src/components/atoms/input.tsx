@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { InputIconProps } from "@/interfaces/components/input"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -18,4 +19,26 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-export { Input }
+
+function InputIcon({ icon, rightIcon, className, ...props }: InputIconProps) {
+  return (
+    <div className="relative flex items-center">
+      {icon && (
+        <span className="absolute left-3 text-gray-500">{icon}</span>
+      )}
+      <input
+        {...props}
+        className={cn(
+          "w-full rounded-lg border px-3 py-2 pl-10 pr-10 text-sm",
+          className
+        )}
+      />
+      {rightIcon && (
+        <span className="absolute right-3 cursor-pointer">{rightIcon}</span>
+      )}
+    </div>
+  )
+}
+
+
+export { Input, InputIcon }

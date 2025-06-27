@@ -2,8 +2,6 @@ import { Toaster } from "@/components/atoms/sonner"
 import "./globals.css"
 import type { Metadata } from "next"
 import { Lato } from "next/font/google"
-import { SidebarProvider } from "@/components/atoms/sidebar"
-import { AppSidebar } from "@/components/molecules/app-sidebar"
 import { AuthProvider } from "@/contexts/auth/auth"
 import { Header } from "./components/header"
 
@@ -26,18 +24,14 @@ export default function RootLayout({
         <html lang="pt" className={`${lato.variable}`}>
             <body className="text-zinc-900 antialiased w-full">
                 <AuthProvider>
-                    <SidebarProvider>
-                        <AppSidebar />
-                        <div className="flex-1">
-                            <Header />
-                            {children}
-                        </div>
-                        <Toaster
-                            className="bg-transparent"
-                            position="top-right"
-                            richColors
-                        />
-                    </SidebarProvider>
+                    <Header />
+                    {children}
+
+                    <Toaster
+                        className="bg-transparent"
+                        position="top-right"
+                        richColors
+                    />
                 </AuthProvider>
             </body>
         </html>
