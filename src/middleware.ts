@@ -8,7 +8,8 @@ function removeTokenFromResponse(response: NextResponse) {
 }
 
 function middleware(req: NextRequest) {
-    const token = req.cookies.get("restapp-token")?.value
+    const token = req.cookies.get("access_key")?.value 
+    // const tempToken = req.cookies.get("temp_access_key")?.value
 
     const isAuthRoute = req.nextUrl.pathname.startsWith("/auth")
     const isPrivateRoute = req.nextUrl.pathname.startsWith("/user")
@@ -18,17 +19,17 @@ function middleware(req: NextRequest) {
     //     return NextResponse.redirect(new URL("/", req.url))
     // }
 
-    if (token) {
-        const decodedToken = jwt.decode(token) as { exp?: number } | null
+    // if (token) {
+    //     const decodedToken = jwt.decode(token) as { exp?: number } | null
 
-        if (decodedToken?.exp && decodedToken.exp * 1000 < Date.now()) {
-            const response = NextResponse.redirect(
-                new URL("/auth/login", req.url)
-            )
-            removeTokenFromResponse(response)
-            return response
-        }
-    }
+    //     if (decodedToken?.exp && decodedToken.exp * 1000 < Date.now()) {
+    //         const response = NextResponse.redirect(
+    //             new URL("/auth/login", req.url)
+    //         )
+    //         removeTokenFromResponse(response)
+    //         return response
+    //     }
+    // }
 
     if (!token && isPrivateRoute) {
         return NextResponse.redirect(new URL("/auth/login", req.url))

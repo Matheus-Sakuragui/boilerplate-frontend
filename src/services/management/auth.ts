@@ -5,7 +5,9 @@ import { ServiceAbstract } from "@/interfaces/service-abstract"
 class AuthService extends ServiceAbstract {
     async getUserInfo(token: string) {
         try {
-            const response = await management.get("/user/info",  { params: token })
+            const response = await management.get("/user/token", {
+                params: { access_key: token },
+            })
             return response
         } catch (error) {
             return this.handleAxiosError(error)
@@ -32,11 +34,21 @@ class AuthService extends ServiceAbstract {
         }
     }
 
-    async verifyCode (body: TwoFAProps) {
-       try {
-            const response = await management.post("/token_auth", body, {
-                validateStatus: () => true,
-            })
+    async verifyCode(body: TwoFAProps) {
+        try {
+            const response = await management.post(
+                "/token_auth",
+                {
+                    auth_code: body.auth_code,
+                    expiration_time: 360000,
+                },
+                {
+                    params: {
+                        access_key: body.access_key,
+                    },
+                    validateStatus: () => true,
+                }
+            )
             return response
         } catch (error) {
             return this.handleAxiosError(error)

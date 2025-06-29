@@ -4,9 +4,14 @@ import type { AxiosResponse } from "axios"
 import type { useRouter } from "next/navigation"
 import type { Dispatch, SetStateAction } from "react"
 import { toast } from "sonner" // componente de notificação
-import type { LoginProps, TwoFAProps, UserDataProps } from "@/interfaces/management/auth"
+import type {
+    LoginProps,
+    TwoFAProps,
+    UserDataProps,
+} from "@/interfaces/management/auth"
 import type { AuthService } from "@/services/management/auth"
 import { removeToken, setToken } from "@/utils/token"
+import { removeTempToken, setTempToken } from "@/utils/temp-token"
 
 const refreshAccessTokenHandler = async (
     authService: AuthService,
@@ -17,7 +22,7 @@ const refreshAccessTokenHandler = async (
         const newToken = response?.data?.accessToken
         if (newToken) {
             setAccessToken(newToken)
-            setToken(newToken)
+            setTempToken(newToken)
             return newToken
         }
         throw new Error("Falha ao renovar o token.")
@@ -45,8 +50,7 @@ const fetchUserInfo = async (
 const loginHandler = async (
     body: LoginProps,
     authService: AuthService,
-    setAccessToken: Dispatch<SetStateAction<string | undefined>>,
-    setUserData: Dispatch<SetStateAction<UserDataProps | null>>,
+    setAccessTempToken: Dispatch<SetStateAction<string | undefined>>,
     router: ReturnType<typeof useRouter>,
     setIsLoading: Dispatch<SetStateAction<boolean>>
 ) => {
@@ -56,16 +60,8 @@ const loginHandler = async (
         handleLoginResponse(response, setIsLoading)
         const token = response.data.access_key
         if (token) {
-            setAccessToken(token)
-            setToken(token)
-
-            // const userResponse = await authService.getUserInfo(token)
-            // setUserData(userResponse.data)
-            // toast.success(`Seja bem-vindo(a) ${userResponse.data.name}!`, {
-            //     duration: 5000,
-            //     description: "Login realizado com sucesso",
-            //     descriptionClassName: "text-xs text-white",
-            // })
+            setAccessTempToken(token)
+            setTempToken(token)
             router.push("/auth/verify-token")
         }
 
@@ -76,7 +72,7 @@ const loginHandler = async (
 }
 
 const verifyTokenHandler = async (
- body: TwoFAProps,
+    body: TwoFAProps,
     authService: AuthService,
     setAccessToken: Dispatch<SetStateAction<string | undefined>>,
     setUserData: Dispatch<SetStateAction<UserDataProps | null>>,
@@ -89,6 +85,7 @@ const verifyTokenHandler = async (
         handleLoginResponse(response, setIsLoading)
         const token = response.data.access_key
         if (token) {
+            removeTempToken()
             setAccessToken(token)
             setToken(token)
 
@@ -134,4 +131,10 @@ const logoutHandler = async (
     removeToken()
 }
 
-export { loginHandler, logoutHandler, refreshAccessTokenHandler, fetchUserInfo, verifyTokenHandler }
+export {
+    loginHandler,
+    logoutHandler,
+    refreshAccessTokenHandler,
+    fetchUserInfo,
+    verifyTokenHandler,
+}

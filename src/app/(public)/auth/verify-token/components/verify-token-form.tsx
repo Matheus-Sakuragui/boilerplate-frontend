@@ -13,12 +13,9 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/atoms/form"
-import { InputIcon } from "@/components/atoms/input"
 import { useAuth } from "@/hooks/use-auth"
-import { isValidEmail } from "@/utils/validators"
 import {
     InputOTP,
     InputOTPGroup,
@@ -33,7 +30,7 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>
 
 function VerifyTokenForm() {
-    const { verifyToken, accessToken } = useAuth()
+    const { verifyToken, tempAccessToken } = useAuth()
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -41,7 +38,7 @@ function VerifyTokenForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             auth_code: "",
-            access_key: accessToken,
+            access_key: tempAccessToken,
         },
     })
 

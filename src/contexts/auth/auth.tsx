@@ -15,7 +15,6 @@ import type {
     LoginProps,
     TwoFAProps,
     UserDataProps,
-    VerifyCodeProps,
 } from "@/interfaces/management/auth"
 import { AuthService } from "@/services/management/auth"
 import { getToken } from "@/utils/token"
@@ -27,9 +26,11 @@ import {
     verifyTokenHandler,
 } from "./handlers"
 import { initializeInterceptors } from "./interceptors"
+import { getTempToken } from "@/utils/temp-token"
 
 export interface AuthContextProps {
     accessToken: string | undefined
+    tempAccessToken: string | undefined
     userData: UserDataProps | null
     login: (
         body: LoginProps,
@@ -51,6 +52,9 @@ const authService = new AuthService()
 const AuthProvider: FC<ChildrenProps> = ({ children }) => {
     const [accessToken, setAccessToken] = useState<string | undefined>(
         getToken()
+    )
+    const [tempAccessToken, setTempAccessToken] = useState<string | undefined>(
+        getTempToken()
     )
     const [userData, setUserData] = useState<UserDataProps | null>(null)
     const router = useRouter()
@@ -96,8 +100,7 @@ const AuthProvider: FC<ChildrenProps> = ({ children }) => {
         await loginHandler(
             body,
             authService,
-            setAccessToken,
-            setUserData,
+            setTempAccessToken,
             router,
             setIsLoading
         )
@@ -131,6 +134,7 @@ const AuthProvider: FC<ChildrenProps> = ({ children }) => {
                 isAuthenticated,
                 fetchUserData,
                 verifyToken,
+                tempAccessToken
             }}
         >
             {children}
