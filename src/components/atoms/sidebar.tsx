@@ -28,7 +28,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3rem"
+const SIDEBAR_WIDTH_ICON = "7rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContextProps = {
@@ -494,7 +494,7 @@ const sidebarMenuButtonVariants = cva(
             size: {
                 default: "h-8 text-sm",
                 sm: "h-7 text-xs",
-                lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
+                lg: "h-12 text-base group-data-[collapsible=icon]:p-0!",
             },
         },
         defaultVariants: {
